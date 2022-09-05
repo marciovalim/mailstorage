@@ -20,5 +20,4 @@ The idea consists in a file storage application implemented with OTP login syste
 - Clean Architecture
 
 ## License
-
-MIT
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
