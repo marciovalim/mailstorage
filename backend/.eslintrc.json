@@ -1,0 +1,133 @@
+{
+    "env": {
+        "es2021": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": [
+        "airbnb-base"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "*.json"
+            ],
+            "extends": [],
+            "plugins": [
+                "json-format"
+            ],
+            "rules": {
+                "indent": [
+                    "error",
+                    "tab"
+                ],
+                "no-tabs": 0
+            },
+            "settings": {
+                "json/sort-package-json": "standard"
+            }
+        },
+        {
+            "parser": "@typescript-eslint/parser",
+            "files": [
+                "*.ts",
+                "*.tsx"
+            ],
+            "extends": [
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "parserOptions": {
+                "ecmaVersion": 12,
+                "sourceType": "module",
+                "project": [
+                    "./tsconfig.json"
+                ]
+            },
+            "plugins": [
+                "@typescript-eslint",
+                "eslint-plugin-import-helpers"
+            ],
+            "rules": {
+                "indent": "off",
+                "no-tabs": 0,
+                "no-plusplus": "off",
+                "@typescript-eslint/indent": [
+                    "error",
+                    "tab",
+                    {
+                        "ignoredNodes": [
+                            "FunctionExpression > .params[decorators.length > 0]",
+                            "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
+                            "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key",
+                            "PropertyDefinition"
+                        ]
+                    }
+                ],
+                "no-use-before-define": "off",
+                "@typescript-eslint/consistent-type-definitions": [
+                    "error",
+                    "type"
+                ],
+                "@typescript-eslint/naming-convention": [
+                    "error",
+                    {
+                        "selector": "interface",
+                        "format": [
+                            "PascalCase"
+                        ]
+                    }
+                ],
+                "import/no-unresolved": "error",
+                "class-methods-use-this": "off",
+                "import/prefer-default-export": "off",
+                "no-shadow": "off",
+                "no-console": "off",
+                "no-useless-constructor": "off",
+                "no-empty-function": "off",
+                "lines-between-class-members": "off",
+                "import/extensions": [
+                    "error",
+                    "ignorePackages",
+                    {
+                        "ts": "never"
+                    }
+                ],
+                "import-helpers/order-imports": [
+                    "error",
+                    {
+                        "newlinesBetween": "always",
+                        "groups": [
+                            "module",
+                            "/^@shared/",
+                            [
+                                "parent",
+                                "sibling",
+                                "index"
+                            ]
+                        ],
+                        "alphabetize": {
+                            "order": "asc",
+                            "ignoreCase": true
+                        }
+                    }
+                ],
+                "import/no-extraneous-dependencies": [
+                    "error",
+                    {
+                        "devDependencies": [
+                            "**/*.spec.js"
+                        ]
+                    }
+                ]
+            },
+            "settings": {
+                "import/resolver": {
+                    "typescript": {}
+                }
+            }
+        }
+    ],
+    "rules": {
+        "max-len": "off"
+    }
+}
