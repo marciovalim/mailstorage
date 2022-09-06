@@ -19,5 +19,8 @@ The idea consists in a file storage application implemented with OTP login syste
 - Test Driven Development
 - Clean Architecture
 
+## Status
+In Development
+
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
