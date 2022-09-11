@@ -1,0 +1,24 @@
+services:
+  app:
+    image: app
+    restart: always
+    container_name: mailstorage
+    build: .
+    ports:
+      - "3333:3333"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - redis-database
+  redis-database:
+    container_name: mailstorage-redis
+    image: redis:7.0.4
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis_data:
+    external: false

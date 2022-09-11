@@ -1,14 +1,21 @@
 import { createClient, RedisClientType } from 'redis';
 
+import { Environment } from '../../../core/Environment';
 import { RedisProvider, TimedValue } from '../RedisProvider';
 
 export class RedisProviderImpl implements RedisProvider {
 	private client: RedisClientType | null = null;
 
 	async open(): Promise<void> {
+		// const user = `:${Environment.getVar('REDIS_PASSWORD')}@`;
+		const host = Environment.vars.REDIS_HOST;
+		const port = Environment.vars.REDIS_PORT;
 		this.client = createClient({
-			// url: process.env.REDIS_URL,
+			url: `redis://${host}:${port}`, // TODO: setup password
+			// url: `redis://${user}${host}:${port}`,
+			// password: Environment.getVar('REDIS_PASSWORD'),
 		});
+
 		this.client.on('error', (err) => console.log('Redis Client Error', err));
 		await this.client.connect();
 	}

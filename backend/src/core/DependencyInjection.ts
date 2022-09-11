@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { container } from 'tsyringe';
 
 import { UsersRepositoryInMemory } from '../modules/users/repositories/implementations/UsersRepositoryInMemory';
