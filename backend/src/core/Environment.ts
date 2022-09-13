@@ -8,6 +8,7 @@ export class Environment {
 	private static varsSchema = yup.object({
 		REDIS_HOST: yup.string().required(),
 		REDIS_PORT: yup.string().required(),
+		REDIS_USERNAME: yup.string().required(),
 		REDIS_PASSWORD: yup.string().required(),
 	});
 
