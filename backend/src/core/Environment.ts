@@ -10,6 +10,10 @@ export class Environment {
 		REDIS_PORT: yup.string().required(),
 		REDIS_USERNAME: yup.string().required(),
 		REDIS_PASSWORD: yup.string().required(),
+		AWS_ACCESS_KEY_ID: yup.string().required(),
+		AWS_SECRET_ACCESS_KEY: yup.string().required(),
+		AWS_REGION: yup.string().required(),
+		MAIL_FROM: yup.string().required(),
 	});
 
 	static vars: InferType<typeof Environment.varsSchema>;
@@ -20,7 +24,7 @@ export class Environment {
 		if (!nodeEnv) throw new Error('NODE_ENV is not defined');
 		if (!['dev', 'test', 'prod'].includes(nodeEnv)) throw new Error('NODE_ENV is invalid');
 
-		dotenv.config({ path: `env/${nodeEnv}.env` });
+		dotenv.config();
 		Environment.vars = await Validator.castObject<InferType<typeof Environment.varsSchema>>(Environment.varsSchema, process.env, 'environment variables');
 	}
 

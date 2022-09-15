@@ -8,6 +8,8 @@ export function handleErrors(err: Error, req: Request, res: Response, next: Next
 			.json({ message: err.message, ...err.payload });
 	}
 
+	console.error(err);
+
 	return res.status(500).json({
 		status: 'error',
 		message: 'Internal server error',

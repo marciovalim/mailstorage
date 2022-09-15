@@ -1,5 +1,10 @@
 export type SendMailDTO = {
-	email: string;
+	from: {
+		email: string;
+	}
+	to: {
+		email: string;
+	};
 	subject: string;
 	body: string;
 }

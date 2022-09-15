@@ -1,5 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 
+import { Environment } from '../../../core/Environment';
 import { AppError } from '../../../errors/AppError';
 import { EmailProvider } from '../../../providers/email/EmailProvider';
 import { RandomProvider } from '../../../providers/random/RandomProvider';
@@ -38,7 +39,12 @@ export class RequestUserAccessUseCase {
 		});
 
 		await this.emailProvider.sendMail({
-			email,
+			from: {
+				email: Environment.vars.MAIL_FROM,
+			},
+			to: {
+				email,
+			},
 			subject: 'Código de acesso',
 			body: `O seu código de acesso ao Mailstorage é ${code}`,
 		});

@@ -4,6 +4,7 @@ import { container } from 'tsyringe';
 import { UsersRepositoryInMemory } from '../modules/users/repositories/implementations/UsersRepositoryInMemory';
 import { UsersRepository, usersRepositoryAlias } from '../modules/users/repositories/UsersRepository';
 import { EmailProvider, emailProviderAlias } from '../providers/email/EmailProvider';
+import { EmailProviderAws } from '../providers/email/implementations/EmailProviderAws';
 import { EmailProviderFake } from '../providers/email/implementations/EmailProviderFake';
 import { RandomProviderImpl } from '../providers/random/implementations/RandomProviderImpl';
 import { RandomProvider, randomProviderAlias } from '../providers/random/RandomProvider';
@@ -18,7 +19,7 @@ export class DependencyInjection {
 		this.initialized = true;
 
 		container.registerSingleton<UsersRepository>(usersRepositoryAlias, UsersRepositoryInMemory);
-		container.registerSingleton<EmailProvider>(emailProviderAlias, EmailProviderFake);
+		container.registerSingleton<EmailProvider>(emailProviderAlias, EmailProviderAws);
 		container.registerSingleton<RandomProvider>(randomProviderAlias, RandomProviderImpl);
 		container.registerSingleton<RedisProvider>(redisProviderAlias, RedisProviderImpl);
 	}

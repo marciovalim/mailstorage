@@ -12,7 +12,7 @@ export class RequestUserAccessController implements Controller {
 	) {}
 
 	async handle(req: Request, res: Response): Promise<Response> {
-		const { email } = req.body;
+		const { email } = req.body; // TODO: implement schema validation
 
 		await this.requestUserAccessUseCase.execute(email);
 
