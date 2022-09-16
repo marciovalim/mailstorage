@@ -14,6 +14,8 @@ export class Environment {
 		AWS_SECRET_ACCESS_KEY: yup.string().required(),
 		AWS_REGION: yup.string().required(),
 		MAIL_FROM: yup.string().required(),
+		MAIL_WELCOME_MSG: yup.string().required(),
+		MAIL_WELCOME_BACK_MSG: yup.string().required(),
 	});
 
 	static vars: InferType<typeof Environment.varsSchema>;

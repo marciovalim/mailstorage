@@ -1,30 +1,39 @@
+import { dirname } from 'path';
 import { inject, injectable } from 'tsyringe';
 
 import { Environment } from '../../../core/Environment';
 import { AppError } from '../../../errors/AppError';
-import { EmailProvider } from '../../../providers/email/EmailProvider';
-import { RandomProvider } from '../../../providers/random/RandomProvider';
+import { EmailProvider, emailProviderAlias } from '../../../providers/email/EmailProvider';
+import { fileManagerAlias, FileManager } from '../../../providers/file-manager/FileManager';
+import { RandomProvider, randomProviderAlias } from '../../../providers/random/RandomProvider';
+import { templaterAlias, Templater } from '../../../providers/templater/Templater';
 import { VerificationCode } from '../entities/User';
-import { UsersRepository } from '../repositories/UsersRepository';
+import { UsersRepository, usersRepositoryAlias } from '../repositories/UsersRepository';
 
 @injectable()
 export class RequestUserAccessUseCase {
 	private readonly emailVerificationCodeSecondsToLive = 60 * 10;
 
 	constructor(
-		@inject('UsersRepository')
+		@inject(usersRepositoryAlias)
 		private usersRepository: UsersRepository,
 
-		@inject('EmailProvider')
+		@inject(emailProviderAlias)
 		private emailProvider: EmailProvider,
 
-		@inject('RandomProvider')
+		@inject(randomProviderAlias)
 		private randomProvider: RandomProvider,
+
+		@inject(fileManagerAlias)
+		private fileManager: FileManager,
+
+		@inject(templaterAlias)
+		private templater: Templater,
 	) {}
 
 	async execute(email: string): Promise<void> {
 		const foundUser = await this.usersRepository.findByEmail(email);
-		if (foundUser && !this.findEmptySlot(foundUser.verificationCodes)) {
+		if (!this.findEmptySlot(foundUser.verificationCodes)) {
 			const minimumWaitTime = Math.min(foundUser.verificationCodes[0]!.secondsToLive, foundUser.verificationCodes[1]!.secondsToLive);
 			throw new AppError(405, 'User already has 2 access requests', { minimumWaitTime });
 		}
@@ -38,16 +47,8 @@ export class RequestUserAccessUseCase {
 			verification: { code, slot, secondsToLive },
 		});
 
-		await this.emailProvider.sendMail({
-			from: {
-				email: Environment.vars.MAIL_FROM,
-			},
-			to: {
-				email,
-			},
-			subject: 'Código de acesso',
-			body: `O seu código de acesso ao Mailstorage é ${code}`,
-		});
+		const isNewUser = foundUser.files.length === 0;
+		await this.sendMail(email, code, isNewUser);
 	}
 
 	private findEmptySlot(verificationCodes: (VerificationCode | undefined)[]): (1 | 2) | undefined {
@@ -57,5 +58,24 @@ export class RequestUserAccessUseCase {
 
 	private generateEmailVerificationCode(): string {
 		return this.randomProvider.string(6, 'numeric');
+	}
+
+	private async sendMail(recipient: string, code: string, isNewUser: boolean): Promise<void> {
+		const rawHtml = await this.fileManager.read(`${__dirname}/../../../templates/verification-code.hbs`);
+		const templatedHtml = await this.templater.render(rawHtml, {
+			welcome: isNewUser ? Environment.vars.MAIL_WELCOME_MSG : Environment.vars.MAIL_WELCOME_BACK_MSG,
+			code,
+		});
+
+		await this.emailProvider.sendMail({
+			from: {
+				email: Environment.vars.MAIL_FROM,
+			},
+			to: {
+				email: recipient,
+			},
+			subject: 'Código de acesso',
+			html: templatedHtml,
+		});
 	}
 }

@@ -9,7 +9,7 @@ describe('EmailProviderAws', () => {
 				email: 'marciogsvalim@gmail.com',
 			},
 			subject: 'Test email',
-			body: 'Test email body',
+			html: 'Test email body',
 		});
 	});
 });

@@ -6,7 +6,7 @@ export type SendMailDTO = {
 		email: string;
 	};
 	subject: string;
-	body: string;
+	html: string;
 }
 
 export type EmailProvider = {

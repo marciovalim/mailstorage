@@ -26,7 +26,7 @@ export class EmailProviderAws implements EmailProvider {
 			from: data.from.email,
 			to: data.to.email,
 			subject: data.subject,
-			text: data.body,
+			html: data.html,
 		});
 	}
 }
