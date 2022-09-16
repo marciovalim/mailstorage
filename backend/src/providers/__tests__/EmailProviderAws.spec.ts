@@ -1,3 +1,4 @@
+import { Environment } from '../../core/Environment';
 import { EmailProviderAws } from '../email/implementations/EmailProviderAws';
 
 describe('EmailProviderAws', () => {
@@ -5,8 +6,11 @@ describe('EmailProviderAws', () => {
 
 	it('should send an email', async () => {
 		await emailProvider.sendMail({
+			from: {
+				email: Environment.vars.MAIL_FROM,
+			},
 			to: {
-				email: 'marciogsvalim@gmail.com',
+				email: Environment.vars.AWS_VERIFIED_MAIL_RECIPIENT,
 			},
 			subject: 'Test email',
 			html: 'Test email body',

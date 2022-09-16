@@ -6,7 +6,9 @@ import { Validator } from './Validator';
 
 export class Environment {
 	private static varsSchema = yup.object({
+		NODE_ENV: yup.string().required().oneOf(['dev', 'test', 'prod']),
 		REDIS_HOST: yup.string().required(),
+		REDIS_HOST_TEST: yup.string().required(),
 		REDIS_PORT: yup.string().required(),
 		REDIS_USERNAME: yup.string().required(),
 		REDIS_PASSWORD: yup.string().required(),
@@ -16,21 +18,32 @@ export class Environment {
 		MAIL_FROM: yup.string().required(),
 		MAIL_WELCOME_MSG: yup.string().required(),
 		MAIL_WELCOME_BACK_MSG: yup.string().required(),
+		AWS_VERIFIED_MAIL_RECIPIENT: yup.string().required(),
 	});
 
 	static vars: InferType<typeof Environment.varsSchema>;
 
 	static async assertInitialized() {
-		if (Environment.isInitialzed()) return;
-		const nodeEnv = process.env.NODE_ENV;
-		if (!nodeEnv) throw new Error('NODE_ENV is not defined');
-		if (!['dev', 'test', 'prod'].includes(nodeEnv)) throw new Error('NODE_ENV is invalid');
-
+		if (Environment.isInitialized()) return;
 		dotenv.config();
-		Environment.vars = await Validator.castObject<InferType<typeof Environment.varsSchema>>(Environment.varsSchema, process.env, 'environment variables');
+
+		try {
+			Environment.vars = await this.varsSchema.validate(process.env, { abortEarly: false });
+		} catch (err) {
+			if (err instanceof yup.ValidationError) {
+				const formatted = await Validator.formatYupErrors(err);
+				throw new Error(JSON.stringify({
+					environment: formatted,
+				}));
+			}
+		}
 	}
 
-	private static isInitialzed() {
+	private static isInitialized() {
 		return Environment.vars !== undefined;
+	}
+
+	static getType(): 'dev' | 'test' | 'prod' {
+		return process.env.NODE_ENV as 'dev' | 'test' | 'prod';
 	}
 }
