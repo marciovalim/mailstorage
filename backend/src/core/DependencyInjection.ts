@@ -3,10 +3,14 @@ import { container } from 'tsyringe';
 
 import { UsersRepositoryInMemory } from '../modules/users/repositories/implementations/UsersRepositoryInMemory';
 import { UsersRepository, usersRepositoryAlias } from '../modules/users/repositories/UsersRepository';
+import { DateProvider, dateProviderAlias } from '../providers/date/DateProvider';
+import { DateProviderImpl } from '../providers/date/implementations/DateProviderImpl';
 import { EmailProvider, emailProviderAlias } from '../providers/email/EmailProvider';
 import { EmailProviderAws } from '../providers/email/implementations/EmailProviderAws';
 import { FileManager, fileManagerAlias } from '../providers/file-manager/FileManager';
 import { FileManagerFs } from '../providers/file-manager/implementations/FileManagerFs';
+import { JwtProviderImpl } from '../providers/jwt/implementations/JwtProviderImpl';
+import { JwtProvider, jwtProviderAlias } from '../providers/jwt/JwtProvider';
 import { RandomProviderImpl } from '../providers/random/implementations/RandomProviderImpl';
 import { RandomProvider, randomProviderAlias } from '../providers/random/RandomProvider';
 import { RedisProviderImpl } from '../providers/redis/implementations/RedisProviderImpl';
@@ -27,6 +31,8 @@ export class DependencyInjection {
 		container.registerSingleton<RedisProvider>(redisProviderAlias, RedisProviderImpl);
 		container.registerSingleton<FileManager>(fileManagerAlias, FileManagerFs);
 		container.registerSingleton<Templater>(templaterAlias, TemplaterHandleBars);
+		container.registerSingleton<DateProvider>(dateProviderAlias, DateProviderImpl);
+		container.registerSingleton<JwtProvider>(jwtProviderAlias, JwtProviderImpl);
 	}
 }
 
@@ -38,3 +44,5 @@ export const randomProvider = container.resolve<RandomProvider>(randomProviderAl
 export const redisProvider = container.resolve<RedisProvider>(redisProviderAlias);
 export const fileManager = container.resolve<FileManager>(fileManagerAlias);
 export const templater = container.resolve<Templater>(templaterAlias);
+export const dateProvider = container.resolve<DateProvider>(dateProviderAlias);
+export const jwtProvider = container.resolve<JwtProvider>(jwtProviderAlias);

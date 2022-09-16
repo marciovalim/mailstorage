@@ -63,6 +63,7 @@
             ]
           }
         ],
+        "arrow-body-style": "off",
         "no-use-before-define": "off",
         "@typescript-eslint/consistent-type-definitions": [
           "error",

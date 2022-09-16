@@ -19,6 +19,7 @@ export class Environment {
 		MAIL_WELCOME_MSG: yup.string().required(),
 		MAIL_WELCOME_BACK_MSG: yup.string().required(),
 		AWS_VERIFIED_MAIL_RECIPIENT: yup.string().required(),
+		JWT_SECRET: yup.string().required(),
 	});
 
 	static vars: InferType<typeof Environment.varsSchema>;
