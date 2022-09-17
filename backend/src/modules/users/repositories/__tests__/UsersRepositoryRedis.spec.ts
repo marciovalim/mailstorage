@@ -75,6 +75,23 @@ describe('Users Repository Redis', () => {
 		});
 	});
 
+	describe('saveFile', () => {
+		it('should save file to user', async () => {
+			const saveVerificationDTO = await saveVerification(1);
+
+			const userFile = {
+				link: randomProvider.string(10, 'alpha'),
+				bytes: randomProvider.integer(100, 1000),
+			};
+
+			await usersRepository.saveFile(saveVerificationDTO.email, userFile);
+
+			const user = await usersRepository.findByEmail(saveVerificationDTO.email);
+			expect(user!.files).toHaveLength(1);
+			expect(user!.files[0]).toMatchObject(userFile);
+		});
+	});
+
 	afterAll(async () => {
 		await redisProvider.close();
 	});

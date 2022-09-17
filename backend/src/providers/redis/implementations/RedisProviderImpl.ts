@@ -44,4 +44,19 @@ export class RedisProviderImpl implements RedisProvider {
 			EX: secondsToLive,
 		});
 	}
+
+	async pushToList(key: string, value: string): Promise<void> {
+		await this.client!.rPush(key, value);
+	}
+
+	async removeAllFromList(key: string, value: string): Promise<void> {
+		await this.client!.lRem(key, 0, value);
+	}
+
+	async clearKeysContaining(str: string): Promise<void> {
+		const keys = await this.client!.keys(`*${str}*`);
+		if (keys.length === 0) return;
+
+		await this.client!.del(keys);
+	}
 }

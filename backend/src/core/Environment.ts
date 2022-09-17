@@ -18,21 +18,25 @@ export class Environment {
 		MAIL_FROM: yup.string().required(),
 		MAIL_WELCOME_MSG: yup.string().required(),
 		MAIL_WELCOME_BACK_MSG: yup.string().required(),
+		MAIL_PROVIDER: yup.string().required().oneOf(['local', 'aws']),
 		AWS_VERIFIED_MAIL_RECIPIENT: yup.string().required(),
 		JWT_SECRET: yup.string().required(),
+		BYTES_LIMIT_PER_USER: yup.number().required(),
+		BYTES_LIMIT_PER_FILE: yup.number().required(),
+		TEMP_FOLDER: yup.string().required(),
 	});
 
 	static vars: InferType<typeof Environment.varsSchema>;
 
-	static async assertInitialized() {
+	static assertInitialized() {
 		if (Environment.isInitialized()) return;
 		dotenv.config();
 
 		try {
-			Environment.vars = await this.varsSchema.validate(process.env, { abortEarly: false });
+			Environment.vars = this.varsSchema.validateSync(process.env, { abortEarly: false });
 		} catch (err) {
 			if (err instanceof yup.ValidationError) {
-				const formatted = await Validator.formatYupErrors(err);
+				const formatted = Validator.formatYupErrors(err);
 				throw new Error(JSON.stringify({
 					environment: formatted,
 				}));

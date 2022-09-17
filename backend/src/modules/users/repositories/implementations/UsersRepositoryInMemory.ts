@@ -1,4 +1,4 @@
-import { User } from '../../entities/User';
+import { User, UserFile } from '../../entities/User';
 import { SaveVerificationDTO, UsersRepository } from '../UsersRepository';
 
 export class UsersRepositoryInMemory implements UsersRepository {
@@ -25,5 +25,15 @@ export class UsersRepositoryInMemory implements UsersRepository {
 		emptyUser.verificationCodes = [undefined, undefined];
 		emptyUser.files = [];
 		return emptyUser;
+	}
+
+	async saveFile(email: string, userFile: UserFile): Promise<void> {
+		const user = await this.findByEmail(email);
+		user.files.push(userFile);
+	}
+
+	async deleteFile(email: string, userFile: UserFile): Promise<void> {
+		const user = await this.findByEmail(email);
+		user.files = user.files.filter((file) => file.link !== userFile.link || file.bytes !== userFile.bytes);
 	}
 }

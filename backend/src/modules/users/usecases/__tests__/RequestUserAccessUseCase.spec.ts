@@ -8,6 +8,7 @@ import { RandomProviderImpl } from '../../../../providers/random/implementations
 import { RandomProvider } from '../../../../providers/random/RandomProvider';
 import { TemplaterHandleBars } from '../../../../providers/templater/implementations/TemplaterHandleBars';
 import { Templater } from '../../../../providers/templater/Templater';
+import { User } from '../../entities/User';
 import { UsersRepositoryInMemory } from '../../repositories/implementations/UsersRepositoryInMemory';
 import { RequestUserAccessUseCase } from '../RequestUserAccessUseCase';
 
@@ -47,8 +48,8 @@ describe('Request User Access Use Case', () => {
 
 	it('should save code in empty slot', async () => {
 		const email = 'test@example.com';
-		usersRepository.users.push({
-			email,
+		const user = new User(email);
+		Object.assign(user, {
 			verificationCodes: [
 				undefined,
 				{
@@ -58,6 +59,7 @@ describe('Request User Access Use Case', () => {
 			],
 			files: [],
 		});
+		usersRepository.users.push(user);
 
 		await requestUserAccessUseCase.execute(email);
 
@@ -104,7 +106,10 @@ describe('Request User Access Use Case', () => {
 	it('should send welcome back email if is not a new user', async () => {
 		const email = 'test@example.com';
 		await requestUserAccessUseCase.execute(email);
-		usersRepository.users[0].files = ['file1', 'file2'];
+		usersRepository.users[0].files = [{
+			link: 'test',
+			bytes: 100,
+		}];
 
 		const emailSendSpy = jest.spyOn(emailProvider, 'sendMail');
 		await requestUserAccessUseCase.execute(email);

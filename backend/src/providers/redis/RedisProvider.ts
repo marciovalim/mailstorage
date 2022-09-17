@@ -2,8 +2,11 @@ export type RedisProvider = {
 	open(): Promise<void>;
 	close(): Promise<void>;
 	getStr(key: string): Promise<TimedValue | null>;
-	getList(key: string): Promise<string[]>;
 	setStr(key: string, value: string, secondsToLive: number): Promise<void>;
+	getList(key: string): Promise<string[]>;
+	pushToList(key: string, value: string): Promise<void>;
+	removeAllFromList(key: string, value: string): Promise<void>;
+	clearKeysContaining(pattern: string): Promise<void>;
 }
 
 export type TimedValue = {

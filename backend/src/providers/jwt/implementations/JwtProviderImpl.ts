@@ -19,11 +19,11 @@ export class JwtProviderImpl implements JwtProvider {
 		return { token, exp };
 	}
 
-	public async verify(token: string): Promise<object> {
+	public async verify(token: string): Promise<object | null> {
 		try {
 			return jwt.verify(token, Environment.vars.JWT_SECRET) as object;
 		} catch (e) {
-			throw new AppError(401, 'UNAUTHORIZED');
+			return null;
 		}
 	}
 }

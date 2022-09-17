@@ -13,4 +13,8 @@ export class RandomProviderImpl implements RandomProvider {
 		}
 		return text;
 	}
+
+	integer(min: number, max: number): number {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
 }

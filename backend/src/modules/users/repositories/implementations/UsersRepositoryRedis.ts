@@ -1,9 +1,10 @@
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 
 import { RedisProvider, redisProviderAlias } from '../../../../providers/redis/RedisProvider';
-import { User } from '../../entities/User';
+import { User, UserFile } from '../../entities/User';
 import { SaveVerificationDTO, UsersRepository } from '../UsersRepository';
 
+@injectable()
 export class UsersRepositoryRedis implements UsersRepository {
 	constructor(
     @inject(redisProviderAlias)
@@ -21,7 +22,7 @@ export class UsersRepositoryRedis implements UsersRepository {
 		const emailCode2 = await this.redisProvider.getStr(this.code2Key(email));
 
 		const user = new User(email);
-		user.files = emailFiles;
+		user.files = emailFiles.map((file) => this.deserializeUserFile(file));
 
 		const verification1 = emailCode1 ? { code: emailCode1.value, secondsToLive: emailCode1.secondsToLive } : undefined;
 		const verification2 = emailCode2 ? { code: emailCode2.value, secondsToLive: emailCode2.secondsToLive } : undefined;
@@ -30,7 +31,18 @@ export class UsersRepositoryRedis implements UsersRepository {
 		return user;
 	}
 
+	async saveFile(email: string, userFile: UserFile): Promise<void> {
+		await this.redisProvider.pushToList(this.filesKey(email), this.serializeUserFile(userFile));
+	}
+
+	async deleteFile(email: string, userFile: UserFile): Promise<void> {
+		await this.redisProvider.removeAllFromList(this.filesKey(email), this.serializeUserFile(userFile));
+	}
+
 	private code1Key = (email: string) => `${email}:code:1`;
 	private code2Key = (email: string) => `${email}:code:2`;
 	private filesKey = (email: string) => `${email}:files`;
+
+	private serializeUserFile = (userFile: UserFile) => JSON.stringify(userFile);
+	private deserializeUserFile = (userFile: string) => JSON.parse(userFile) as UserFile;
 }

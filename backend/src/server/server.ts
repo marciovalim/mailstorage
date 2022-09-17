@@ -7,7 +7,7 @@ const server = app.listen(3333, onListening);
 PM2.onClose(shutDownGracefully);
 
 async function onListening() {
-	await Environment.assertInitialized();
+	Environment.assertInitialized();
 	await redisProvider.open();
 	PM2.emitReady();
 	console.log('🚀 Server is running!');

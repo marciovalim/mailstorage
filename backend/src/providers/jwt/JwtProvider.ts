@@ -1,6 +1,6 @@
 export type JwtProvider = {
 	generate(input: JwtInput): Promise<JwtResponse>;
-	verify(token: string): Promise<object>;
+	verify(token: string): Promise<object | null>;
 }
 
 export type JwtInput = {

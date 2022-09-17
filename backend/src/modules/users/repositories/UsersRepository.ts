@@ -1,4 +1,4 @@
-import { User } from '../entities/User';
+import { User, UserFile } from '../entities/User';
 
 export type SaveVerificationDTO = {
 	email: string;
@@ -12,6 +12,8 @@ export type SaveVerificationDTO = {
 export type UsersRepository = {
 	saveVerification({ email, verification }: SaveVerificationDTO): Promise<void>;
 	findByEmail(email: string): Promise<User>;
+	saveFile(email: string, userFile: UserFile): Promise<void>;
+	deleteFile(email: string, userFile: UserFile): Promise<void>;
 }
 
 export const usersRepositoryAlias = 'UsersRepository';
