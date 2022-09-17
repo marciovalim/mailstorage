@@ -8,9 +8,7 @@ import { UsersRepository, usersRepositoryAlias } from '../../modules/users/repos
 import { app } from '../../server/app';
 
 export class UserTestUtils {
-	static readonly csvFilePath = 'src/__tests__/local/upload-test.csv';
-	static readonly bigFilePath = 'src/__tests__/local/500-kb.txt';
-	static readonly tooBigFilePath = 'src/__tests__/local/too-big.txt';
+	static readonly testFilePath = 'src/__tests__/assets/file.txt';
 
 	static async initDatabase() {
 		await redisProvider.open();
@@ -46,23 +44,24 @@ export class UserTestUtils {
 		await Promise.all(promises);
 	}
 
-	static async fillUserBytesWith(bearerHeader: string, filePath: string) {
+	static async fillUserBytes(bearerHeader: string) {
 		const bytesPerUser = Environment.vars.BYTES_LIMIT_PER_USER;
-		const bigFileBytes = await fileManager.getByteSize(filePath);
-		const filesCountToFill = Math.ceil(bytesPerUser / bigFileBytes);
+		const bytesPerFile = Environment.vars.BYTES_LIMIT_PER_FILE;
+		const filesToUpload = Math.floor(bytesPerUser / bytesPerFile);
 
-		const promises = Array(filesCountToFill).fill(0).map(() => {
-			return this.makeUploadUserFileReq(bearerHeader, this.bigFilePath);
-		});
+		const mock = jest.spyOn(fileManager, 'getByteSize').mockResolvedValue(bytesPerFile);
 
+		const promises = Array.from({ length: filesToUpload }, () => this.makeUploadUserFileReq(bearerHeader));
 		await Promise.all(promises);
+
+		mock.mockRestore();
 	}
 
 	static async makeUploadUserFileReq(authHeader: string, filePath?: string) {
 		return request(app).post('/users/files')
 			.set({ Authorization: authHeader })
 			.field('name', 'test-file')
-			.attach('file', filePath ?? this.csvFilePath);
+			.attach('file', filePath ?? this.testFilePath);
 	}
 
 	static async findUser(email: string): Promise<User> {

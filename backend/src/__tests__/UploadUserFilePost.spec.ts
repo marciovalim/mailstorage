@@ -2,7 +2,6 @@ import request from 'supertest';
 
 import { fileManager } from '../core/DependencyInjection';
 import { Environment } from '../core/Environment';
-import { FileManagerFs } from '../providers/file-manager/implementations/FileManagerFs';
 import { app } from '../server/app';
 import { UserTestUtils } from './utils/UserTestUtils';
 
@@ -35,9 +34,9 @@ describe('Upload User File POST', () => {
 	describe('Logic', () => {
 		it('should return 403 if user has reached the limit of bytes', async () => {
 			await UserTestUtils.clearUserBytes(email);
-			await UserTestUtils.fillUserBytesWith(bearerHeader, UserTestUtils.bigFilePath);
+			await UserTestUtils.fillUserBytes(bearerHeader);
 
-			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.bigFilePath);
+			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.testFilePath);
 
 			expect(res.status).toBe(403);
 			expect(res.body.reason).toBe('BYTES_LIMIT_REACHED');
@@ -45,26 +44,9 @@ describe('Upload User File POST', () => {
 
 		it('should return 400 if file is too big', async () => {
 			await UserTestUtils.clearUserBytes(email);
+			jest.spyOn(fileManager, 'getByteSize').mockResolvedValue(Environment.vars.BYTES_LIMIT_PER_FILE + 1);
 
-			jest.mock('../providers/file-manager/implementations/FileManagerFs.ts', () => {
-				return jest.fn().mockImplementation(() => {
-					return {
-						getByteSize: () => {
-							console.log('mocked getByteSize');
-							return Environment.vars.BYTES_LIMIT_PER_USER + 1;
-						},
-						read: () => {
-							return 'content';
-						},
-					};
-				});
-			});
-
-			const fileManagerFs = new FileManagerFs();
-			fileManagerFs.getByteSize('any path');
-
-			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.tooBigFilePath);
-
+			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.testFilePath);
 			expect(res.status).toBe(400);
 			expect(res.body.reason).toBe('FILE_TOO_BIG');
 		});
