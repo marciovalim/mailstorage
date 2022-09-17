@@ -1,6 +1,5 @@
 import { inject, injectable } from 'tsyringe';
 
-import { randomProvider } from '../../../core/DependencyInjection';
 import { Environment } from '../../../core/Environment';
 import { UseCase } from '../../../core/UseCase';
 import { AppError } from '../../../errors/AppError';

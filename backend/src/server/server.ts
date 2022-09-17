@@ -1,21 +1,23 @@
-import { redisProvider } from '../core/DependencyInjection';
+import { DependencyInjection, find } from '../core/DependencyInjection';
 import { Environment } from '../core/Environment';
 import { PM2 } from '../core/PM2';
+import { RedisProvider, redisProviderAlias } from '../providers/redis/RedisProvider';
 import { app } from './app';
 
+Environment.assertInitialized();
+DependencyInjection.assertInitialized();
 const server = app.listen(3333, onListening);
 PM2.onClose(shutDownGracefully);
 
 async function onListening() {
-	Environment.assertInitialized();
-	await redisProvider.open();
+	await find<RedisProvider>(redisProviderAlias).open();
 	PM2.emitReady();
 	console.log('🚀 Server is running!');
 }
 
 function shutDownGracefully() {
 	server.close(async () => {
-		await redisProvider.close();
+		await find<RedisProvider>(redisProviderAlias).close();
 		process.exit(0);
 	});
 }

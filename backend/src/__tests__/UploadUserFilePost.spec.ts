@@ -1,7 +1,8 @@
 import request from 'supertest';
+import { container } from 'tsyringe';
 
-import { fileManager } from '../core/DependencyInjection';
 import { Environment } from '../core/Environment';
+import { FileManager, fileManagerAlias } from '../providers/file-manager/FileManager';
 import { app } from '../server/app';
 import { UserTestUtils } from './utils/UserTestUtils';
 
@@ -32,6 +33,8 @@ describe('Upload User File POST', () => {
 	});
 
 	describe('Logic', () => {
+		const fileManager = container.resolve<FileManager>(fileManagerAlias);
+
 		it('should return 403 if user has reached the limit of bytes', async () => {
 			await UserTestUtils.clearUserBytes(email);
 			await UserTestUtils.fillUserBytes(bearerHeader);

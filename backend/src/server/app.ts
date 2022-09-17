@@ -1,11 +1,8 @@
 import 'express-async-errors';
 import express from 'express';
 
-import { DependencyInjection } from '../core/DependencyInjection';
 import { handleErrors } from './middlewares/handleErrors';
 import { appRouter } from './routes/router';
-
-DependencyInjection.assertInitialized();
 
 const app = express();
 

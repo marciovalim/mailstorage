@@ -20,6 +20,8 @@ export class Environment {
 		MAIL_WELCOME_BACK_MSG: yup.string().required(),
 		MAIL_PROVIDER: yup.string().required().oneOf(['local', 'aws']),
 		AWS_VERIFIED_MAIL_RECIPIENT: yup.string().required(),
+		AWS_BUCKET_NAME: yup.string().required(),
+		STORAGE_PROVIDER: yup.string().required().oneOf(['local', 'aws']),
 		JWT_SECRET: yup.string().required(),
 		BYTES_LIMIT_PER_USER: yup.number().required(),
 		BYTES_LIMIT_PER_FILE: yup.number().required(),

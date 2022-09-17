@@ -1,4 +1,6 @@
-import { randomProvider } from '../../../../core/DependencyInjection';
+import { container } from 'tsyringe';
+
+import { RandomProvider, randomProviderAlias } from '../../../../providers/random/RandomProvider';
 import { RedisProviderImpl } from '../../../../providers/redis/implementations/RedisProviderImpl';
 import { User } from '../../entities/User';
 import { UsersRepositoryRedis } from '../implementations/UsersRepositoryRedis';
@@ -13,6 +15,7 @@ describe('Users Repository Redis', () => {
 		usersRepository = new UsersRepositoryRedis(redisProvider);
 	});
 
+	const randomProvider = container.resolve<RandomProvider>(randomProviderAlias);
 	const randomEmail = () => `test-${randomProvider.string(10, 'alpha')}@test.com`;
 
 	const saveVerification = async (slot: 1 | 2): Promise<SaveVerificationDTO> => {

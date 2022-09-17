@@ -1,7 +1,6 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
+import { container, InjectionToken } from 'tsyringe';
 
-import { UsersRepositoryInMemory } from '../modules/users/repositories/implementations/UsersRepositoryInMemory';
 import { UsersRepositoryRedis } from '../modules/users/repositories/implementations/UsersRepositoryRedis';
 import { UsersRepository, usersRepositoryAlias } from '../modules/users/repositories/UsersRepository';
 import { DateProvider, dateProviderAlias } from '../providers/date/DateProvider';
@@ -17,6 +16,7 @@ import { RandomProviderImpl } from '../providers/random/implementations/RandomPr
 import { RandomProvider, randomProviderAlias } from '../providers/random/RandomProvider';
 import { RedisProviderImpl } from '../providers/redis/implementations/RedisProviderImpl';
 import { RedisProvider, redisProviderAlias } from '../providers/redis/RedisProvider';
+import { StorageProviderAws } from '../providers/storage/implementations/StorageProviderAws';
 import { StorageProviderLocal } from '../providers/storage/implementations/StorageProviderLocal';
 import { StorageProvider, storageProviderAlias } from '../providers/storage/StorageProvider';
 import { TemplaterHandleBars } from '../providers/templater/implementations/TemplaterHandleBars';
@@ -38,24 +38,21 @@ export class DependencyInjection {
 		container.registerSingleton<Templater>(templaterAlias, TemplaterHandleBars);
 		container.registerSingleton<DateProvider>(dateProviderAlias, DateProviderImpl);
 		container.registerSingleton<JwtProvider>(jwtProviderAlias, JwtProviderImpl);
-		container.registerSingleton<StorageProvider>(storageProviderAlias, StorageProviderLocal);
 
 		const mailProviders = {
 			aws: EmailProviderAws,
 			local: EmailProviderFake,
 		};
 		container.registerSingleton<EmailProvider>(emailProviderAlias, mailProviders[Environment.vars.MAIL_PROVIDER]);
+
+		const storageProviders = {
+			aws: StorageProviderAws,
+			local: StorageProviderLocal,
+		};
+		container.registerSingleton<StorageProvider>(storageProviderAlias, storageProviders[Environment.vars.STORAGE_PROVIDER]);
 	}
 }
 
-DependencyInjection.assertInitialized();
-
-export const usersRepository = container.resolve<UsersRepository>(usersRepositoryAlias);
-export const emailProvider = container.resolve<EmailProvider>(emailProviderAlias);
-export const randomProvider = container.resolve<RandomProvider>(randomProviderAlias);
-export const redisProvider = container.resolve<RedisProvider>(redisProviderAlias);
-export const fileManager = container.resolve<FileManager>(fileManagerAlias);
-export const templater = container.resolve<Templater>(templaterAlias);
-export const dateProvider = container.resolve<DateProvider>(dateProviderAlias);
-export const jwtProvider = container.resolve<JwtProvider>(jwtProviderAlias);
-export const storageProvider = container.resolve<StorageProvider>(storageProviderAlias);
+export const find = <T>(token: InjectionToken<T>): T => {
+	return container.resolve(token);
+};

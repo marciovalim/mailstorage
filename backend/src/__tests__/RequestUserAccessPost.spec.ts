@@ -1,7 +1,8 @@
 import request from 'supertest';
+import { container } from 'tsyringe';
 
-import { redisProvider } from '../core/DependencyInjection';
 import { Environment } from '../core/Environment';
+import { RedisProvider, redisProviderAlias } from '../providers/redis/RedisProvider';
 import { app } from '../server/app';
 import { UserTestUtils } from './utils/UserTestUtils';
 
@@ -11,6 +12,7 @@ describe('Request User Access Integration', () => {
 	});
 
 	const email = Environment.vars.AWS_VERIFIED_MAIL_RECIPIENT;
+	const redisProvider = container.resolve<RedisProvider>(redisProviderAlias);
 
 	it('should send email and save code', async () => {
 		await redisProvider.clearKeysContaining(email);
