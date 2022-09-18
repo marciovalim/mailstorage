@@ -43,6 +43,10 @@ export class UploadUserFileUseCase implements UseCase<UploadUserFileRequest, Upl
 			throw new AppError(403, 'BYTES_LIMIT_REACHED');
 		}
 
+		if (user.files.length >= Environment.vars.FILES_LIMIT_PER_USER) {
+			throw new AppError(403, 'FILES_LIMIT_REACHED');
+		}
+
 		const fileContent = await this.fileManager.read(input.filePath);
 		const storageLink = await this.storageProvider.saveFile(input.userEmail, fileContent);
 

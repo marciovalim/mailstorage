@@ -26,6 +26,7 @@ export class Environment {
 		JWT_EXP_IN_HOURS: yup.number().required(),
 		BYTES_LIMIT_PER_USER: yup.number().required(),
 		BYTES_LIMIT_PER_FILE: yup.number().required(),
+		FILES_LIMIT_PER_USER: yup.number().required(),
 		TEMP_FOLDER: yup.string().required(),
 	});
 

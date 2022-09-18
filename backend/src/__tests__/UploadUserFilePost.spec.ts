@@ -45,6 +45,22 @@ describe('Upload User File POST', () => {
 			expect(res.body.reason).toBe('BYTES_LIMIT_REACHED');
 		});
 
+		it('should return 403 if user has reached the limit of files', async () => {
+			await UserTestUtils.clearUserBytes(bearerHeader, email);
+
+			jest.spyOn(fileManager, 'getByteSize').mockResolvedValue(1);
+			jest.spyOn(fileManager, 'read').mockResolvedValue('1');
+			const promises = Array(Environment.vars.FILES_LIMIT_PER_USER).fill(0).map(() => {
+				return UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.testFilePath);
+			});
+			await Promise.all(promises);
+
+			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.testFilePath);
+
+			expect(res.status).toBe(403);
+			expect(res.body.reason).toBe('FILES_LIMIT_REACHED');
+		});
+
 		it('should return 400 if file is too big', async () => {
 			await UserTestUtils.clearUserBytes(bearerHeader, email);
 			jest.spyOn(fileManager, 'getByteSize').mockResolvedValue(Environment.vars.BYTES_LIMIT_PER_FILE + 1);
