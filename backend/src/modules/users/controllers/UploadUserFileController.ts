@@ -14,7 +14,6 @@ export class UploadUserFileController implements Controller {
 
 	@inject(fileManagerAlias)
 	private fileManager: FileManager,
-
 	) {}
 
 	async handle(req: Request, res: Response): Promise<Response> {
@@ -23,14 +22,14 @@ export class UploadUserFileController implements Controller {
 		}
 
 		try {
-			await this.uploadUserFileUseCase.execute({
+			const uploadRes = await this.uploadUserFileUseCase.execute({
 				userEmail: req.user!.email,
 				filePath: req.file.path,
 			});
+
+			return res.status(200).json(uploadRes);
 		} finally {
 			await this.fileManager.delete(req.file.path);
 		}
-
-		return res.status(200).json();
 	}
 }

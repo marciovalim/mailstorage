@@ -38,4 +38,12 @@ export class StorageProviderAws implements StorageProvider {
 	generateFileName(group: string): string {
 		return `${group}/${this.randomProvider.string(8, 'alpha')}`;
 	}
+
+	async deleteFile(link: string): Promise<void> {
+		const key = link.split('amazonaws.com/').pop() ?? link;
+		await this.client.deleteObject({
+			Bucket: Environment.vars.AWS_BUCKET_NAME,
+			Key: key,
+		}).promise();
+	}
 }

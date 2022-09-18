@@ -10,11 +10,15 @@ export class StorageProviderLocal implements StorageProvider {
 		private randomProvider: RandomProvider,
 	) {}
 
-	async saveFile(key: string, content: string): Promise<string> {
-		return this.randomProvider.string(10, 'alpha');
+	async saveFile(group: string, _content: string): Promise<string> {
+		return this.generateFileName(group);
 	}
 
 	generateFileName(group: string): string {
 		return `${group}/${this.randomProvider.string(8, 'alpha')}`;
+	}
+
+	async deleteFile(link: string): Promise<void> {
+		return Promise.resolve();
 	}
 }

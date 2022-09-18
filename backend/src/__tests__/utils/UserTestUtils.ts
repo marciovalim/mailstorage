@@ -12,6 +12,12 @@ import { app } from '../../server/app';
 export class UserTestUtils {
 	static readonly testFilePath = 'src/__tests__/assets/file.txt';
 
+	static async wait(ms: number) {
+		return new Promise((resolve) => {
+			setTimeout(resolve, ms);
+		});
+	}
+
 	static async initTesting() {
 		await container.resolve<RedisProvider>(redisProviderAlias).open();
 	}
@@ -44,10 +50,10 @@ export class UserTestUtils {
 		return lastCode.code;
 	}
 
-	static async clearUserBytes(email: string) {
+	static async clearUserBytes(bearerHeader: string, email: string) {
 		const usersRepo = container.resolve<UsersRepository>(usersRepositoryAlias);
 		const user = await usersRepo.findByEmail(email);
-		const promises = user.files.map((file) => usersRepo.deleteFile(email, file));
+		const promises = user.files.map((file) => UserTestUtils.makeDeleteFileReq(bearerHeader, file.link));
 		await Promise.all(promises);
 	}
 
@@ -70,6 +76,12 @@ export class UserTestUtils {
 			.set({ Authorization: authHeader })
 			.field('name', 'test-file')
 			.attach('file', filePath ?? this.testFilePath);
+	}
+
+	static async makeDeleteFileReq(bearerHeader: string, fileLink: string) {
+		const route = (id: string) => `/users/files/${id}`;
+		const fileId = encodeURIComponent(fileLink.split('amazonaws.com').pop() ?? '');
+		return request(app).delete(route(fileId)).set('Authorization', bearerHeader);
 	}
 
 	static async findUser(email: string): Promise<User> {

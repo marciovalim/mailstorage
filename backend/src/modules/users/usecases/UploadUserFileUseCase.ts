@@ -12,8 +12,12 @@ export type UploadUserFileRequest = {
 	filePath: string;
 }
 
+export type UploadUserFileResponse = {
+	link: string;
+}
+
 @injectable()
-export class UploadUserFileUseCase implements UseCase<UploadUserFileRequest, void> {
+export class UploadUserFileUseCase implements UseCase<UploadUserFileRequest, UploadUserFileResponse> {
 	constructor(
     @inject(fileManagerAlias)
     private fileManager: FileManager,
@@ -25,7 +29,7 @@ export class UploadUserFileUseCase implements UseCase<UploadUserFileRequest, voi
     private usersRepository: UsersRepository,
 	) {}
 
-	async execute(input: UploadUserFileRequest): Promise<void> {
+	async execute(input: UploadUserFileRequest): Promise<UploadUserFileResponse> {
 		const user = await this.usersRepository.findByEmail(input.userEmail);
 		const newFileSize = await this.fileManager.getByteSize(input.filePath);
 
@@ -46,5 +50,7 @@ export class UploadUserFileUseCase implements UseCase<UploadUserFileRequest, voi
 			bytes: newFileSize,
 			link: storageLink,
 		});
+
+		return { link: storageLink };
 	}
 }

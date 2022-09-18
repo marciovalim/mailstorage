@@ -36,7 +36,7 @@ describe('Upload User File POST', () => {
 		const fileManager = container.resolve<FileManager>(fileManagerAlias);
 
 		it('should return 403 if user has reached the limit of bytes', async () => {
-			await UserTestUtils.clearUserBytes(email);
+			await UserTestUtils.clearUserBytes(bearerHeader, email);
 			await UserTestUtils.fillUserBytes(bearerHeader);
 
 			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.testFilePath);
@@ -46,7 +46,7 @@ describe('Upload User File POST', () => {
 		});
 
 		it('should return 400 if file is too big', async () => {
-			await UserTestUtils.clearUserBytes(email);
+			await UserTestUtils.clearUserBytes(bearerHeader, email);
 			jest.spyOn(fileManager, 'getByteSize').mockResolvedValue(Environment.vars.BYTES_LIMIT_PER_FILE + 1);
 
 			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader, UserTestUtils.testFilePath);
@@ -55,10 +55,11 @@ describe('Upload User File POST', () => {
 		});
 
 		it('should save file', async () => {
-			await UserTestUtils.clearUserBytes(email);
+			await UserTestUtils.clearUserBytes(bearerHeader, email);
 
 			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader);
 			expect(res.status).toBe(200);
+			expect(res.body.link).toEqual(expect.any(String));
 
 			const user = await UserTestUtils.findUser(email);
 			expect(user.files).toHaveLength(1);
@@ -68,7 +69,7 @@ describe('Upload User File POST', () => {
 			const tempFolder = Environment.vars.TEMP_FOLDER;
 			const filesCountBefore = await fileManager.countFiles(tempFolder);
 
-			await UserTestUtils.clearUserBytes(email);
+			await UserTestUtils.clearUserBytes(bearerHeader, email);
 
 			const res = await UserTestUtils.makeUploadUserFileReq(bearerHeader);
 			expect(res.status).toBe(200);

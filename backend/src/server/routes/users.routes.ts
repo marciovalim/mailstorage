@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 
 import { find } from '../../core/DependencyInjection';
 import { ConfirmUserAccessController } from '../../modules/users/controllers/ConfirmUserAccessController';
+import { DeleteUserFileController } from '../../modules/users/controllers/DeleteUserFileController';
 import { GetUserController } from '../../modules/users/controllers/GetUserController';
 import { RequestUserAccessController } from '../../modules/users/controllers/RequestUserAccessController';
 import { UploadUserFileController } from '../../modules/users/controllers/UploadUserFileController';
@@ -20,6 +21,7 @@ usersRouter.post(
 	receiveSingleFile,
 	(req, res) => container.resolve(UploadUserFileController).handle(req, res),
 );
+usersRouter.delete('/files/:id', ensureAuthenticated, (req, res) => find(DeleteUserFileController).handle(req, res));
 
 usersRouter.get('/', ensureAuthenticated, (req, res) => find(GetUserController).handle(req, res));
 
