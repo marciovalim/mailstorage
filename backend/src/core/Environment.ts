@@ -23,6 +23,7 @@ export class Environment {
 		AWS_BUCKET_NAME: yup.string().required(),
 		STORAGE_PROVIDER: yup.string().required().oneOf(['local', 'aws']),
 		JWT_SECRET: yup.string().required(),
+		JWT_EXP_IN_HOURS: yup.number().required(),
 		BYTES_LIMIT_PER_USER: yup.number().required(),
 		BYTES_LIMIT_PER_FILE: yup.number().required(),
 		TEMP_FOLDER: yup.string().required(),

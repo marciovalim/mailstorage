@@ -1,5 +1,7 @@
+import { DateProvided } from './DateProvided';
+
 export type DateProvider = {
-	oneFromNowInMilliseconds(): number;
+	nowPlusHours(hours: number): DateProvided;
 }
 
 export const dateProviderAlias = 'DateProvider';

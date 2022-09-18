@@ -5,6 +5,7 @@ import { Environment } from '../core/Environment';
 jest.setTimeout(30 * 1000);
 
 Environment.assertInitialized();
+Environment.vars.MAIL_PROVIDER = 'local';
 Environment.vars.STORAGE_PROVIDER = 'local';
 
 DependencyInjection.assertInitialized();

@@ -6,13 +6,9 @@ import { EmailProvider, SendMailDTO } from '../EmailProvider';
 
 export class EmailProviderAws implements EmailProvider {
 	private transporter: Transporter;
+	private sentCount = 0;
 
 	constructor() {
-		this.init();
-	}
-
-	private async init() {
-		await Environment.assertInitialized();
 		this.transporter = createTransport({
 			SES: new SES({
 				apiVersion: '2010-12-01',
@@ -22,6 +18,11 @@ export class EmailProviderAws implements EmailProvider {
 	}
 
 	async sendMail(data: SendMailDTO): Promise<void> {
+		if (Environment.vars.NODE_ENV === 'test' && this.sentCount > 0) {
+			throw new Error('EmailProviderAws should not be used more than once in test environment');
+		}
+
+		this.sentCount++;
 		await this.transporter.sendMail({
 			from: data.from.email,
 			to: data.to.email,

@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { container } from 'tsyringe';
 
+import { find } from '../../core/DependencyInjection';
 import { Environment } from '../../core/Environment';
 import { User, VerificationCode } from '../../modules/users/entities/User';
 import { UsersRepository, usersRepositoryAlias } from '../../modules/users/repositories/UsersRepository';
@@ -11,12 +12,17 @@ import { app } from '../../server/app';
 export class UserTestUtils {
 	static readonly testFilePath = 'src/__tests__/assets/file.txt';
 
-	static async initDatabase() {
+	static async initTesting() {
 		await container.resolve<RedisProvider>(redisProviderAlias).open();
 	}
 
-	static async closeDatabase() {
+	static async finishTesting(email?: string) {
+		await this.hardDeleteUser(email ?? Environment.vars.AWS_VERIFIED_MAIL_RECIPIENT);
 		await container.resolve<RedisProvider>(redisProviderAlias).close();
+	}
+
+	static async hardDeleteUser(email: string) {
+		await find<RedisProvider>(redisProviderAlias).clearKeysContaining(email);
 	}
 
 	static async getBearerToken(email: string): Promise<string> {

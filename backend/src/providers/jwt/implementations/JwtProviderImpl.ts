@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 
 import { Environment } from '../../../core/Environment';
-import { AppError } from '../../../errors/AppError';
 import { DateProvider, dateProviderAlias } from '../../date/DateProvider';
 import { JwtProvider, JwtInput, JwtResponse } from '../JwtProvider';
 
@@ -14,7 +13,7 @@ export class JwtProviderImpl implements JwtProvider {
 	) {}
 
 	public async generate(input: JwtInput): Promise<JwtResponse> {
-		const exp = this.dateProvider.oneFromNowInMilliseconds();
+		const exp = this.dateProvider.nowPlusHours(Environment.vars.JWT_EXP_IN_HOURS).inSeconds;
 		const token = jwt.sign({ exp }, Environment.vars.JWT_SECRET, { subject: input.subject });
 		return { token, exp };
 	}

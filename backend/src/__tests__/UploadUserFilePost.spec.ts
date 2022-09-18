@@ -14,7 +14,7 @@ describe('Upload User File POST', () => {
 
 	let bearerHeader: string;
 	beforeAll(async () => {
-		await UserTestUtils.initDatabase();
+		await UserTestUtils.initTesting();
 		bearerHeader = await UserTestUtils.getBearerToken(email);
 	});
 
@@ -79,6 +79,6 @@ describe('Upload User File POST', () => {
 	});
 
 	afterAll(async () => {
-		await UserTestUtils.closeDatabase();
+		await UserTestUtils.finishTesting();
 	});
 });

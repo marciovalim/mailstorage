@@ -1,6 +1,9 @@
+import { decode } from 'jsonwebtoken';
 import request from 'supertest';
 
+import { find } from '../core/DependencyInjection';
 import { Environment } from '../core/Environment';
+import { JwtProvider, jwtProviderAlias } from '../providers/jwt/JwtProvider';
 import { app } from '../server/app';
 import { UserTestUtils } from './utils/UserTestUtils';
 
@@ -17,7 +20,7 @@ describe('Confirm User Acccess POST', () => {
 
 	beforeAll(async () => {
 		Environment.assertInitialized();
-		await UserTestUtils.initDatabase();
+		await UserTestUtils.initTesting();
 	});
 
 	describe('Schema', () => {
@@ -65,7 +68,6 @@ describe('Confirm User Acccess POST', () => {
 
 		it('should return JWT token if code is valid', async () => {
 			const realCode = await UserTestUtils.getRequestUserAccessCode(verifiedRecipient);
-
 			const response = await createConfirmUserAccessReq(verifiedRecipient, realCode);
 
 			expect(response.status).toBe(200);
@@ -73,9 +75,21 @@ describe('Confirm User Acccess POST', () => {
 			expect(response.body.token).toEqual(expect.any(String));
 			expect(response.body.exp).toEqual(expect.any(Number));
 		});
+
+		it('should return token with correct expiration', async () => {
+			const realCode = await UserTestUtils.getRequestUserAccessCode(verifiedRecipient);
+			const response = await createConfirmUserAccessReq(verifiedRecipient, realCode);
+
+			const tokenExpTimeInSecs = 60 * 60 * Environment.vars.JWT_EXP_IN_HOURS;
+			const dateNowInSecs = Math.floor(new Date().getTime() / 1000);
+			const tokenExactCorrectExp = dateNowInSecs + tokenExpTimeInSecs;
+
+			const { exp: generatedTokenExp } = decode(response.body.token) as { exp: number };
+			expect(Math.abs(generatedTokenExp - tokenExactCorrectExp)).toBeLessThanOrEqual(10);
+		});
 	});
 
 	afterAll(async () => {
-		await UserTestUtils.closeDatabase();
+		await UserTestUtils.finishTesting();
 	});
 });

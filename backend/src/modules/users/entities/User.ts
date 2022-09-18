@@ -4,11 +4,13 @@ export class User {
 	email: string;
 	verificationCodes: [VerificationCode | undefined, VerificationCode | undefined];
 	files: UserFile[];
+	maxBytes: number;
 
 	constructor(email: string) {
 		this.email = email;
 		this.verificationCodes = [undefined, undefined];
 		this.files = [];
+		this.maxBytes = Environment.vars.BYTES_LIMIT_PER_USER;
 	}
 
 	getBytesUsed(): number {

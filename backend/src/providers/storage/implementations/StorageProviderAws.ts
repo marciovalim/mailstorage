@@ -8,15 +8,12 @@ import { StorageProvider } from '../StorageProvider';
 @injectable()
 export class StorageProviderAws implements StorageProvider {
 	private client: AWS.S3;
+	private savedCount = 0;
 
 	constructor(
 		@inject(randomProviderAlias)
 		private randomProvider: RandomProvider,
 	) {
-		if (Environment.vars.NODE_ENV === 'test') {
-			throw new Error('StorageProviderAws should not be used in test environment');
-		}
-
 		this.client = new AWS.S3({
 			apiVersion: '2006-03-01',
 			region: Environment.vars.AWS_REGION,
@@ -24,6 +21,11 @@ export class StorageProviderAws implements StorageProvider {
 	}
 
 	async saveFile(group: string, content: string): Promise<string> {
+		if (Environment.vars.NODE_ENV === 'test' && this.savedCount > 0) {
+			throw new Error('StorageProviderAws should not be used in test environment more than once');
+		}
+
+		this.savedCount++;
 		const res = await this.client.upload({
 			Bucket: Environment.vars.AWS_BUCKET_NAME,
 			Key: this.generateFileName(group),
