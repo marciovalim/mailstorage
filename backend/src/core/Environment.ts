@@ -8,7 +8,6 @@ export class Environment {
 	private static varsSchema = yup.object({
 		NODE_ENV: yup.string().required().oneOf(['dev', 'test', 'prod']),
 		REDIS_HOST: yup.string().required(),
-		REDIS_HOST_TEST: yup.string().required(),
 		REDIS_PORT: yup.string().required(),
 		REDIS_USERNAME: yup.string().required(),
 		REDIS_PASSWORD: yup.string().required(),

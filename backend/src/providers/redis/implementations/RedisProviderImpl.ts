@@ -10,7 +10,7 @@ export class RedisProviderImpl implements RedisProvider {
 	async open(): Promise<void> {
 		const username = Environment.vars.REDIS_USERNAME;
 		const password = Environment.vars.REDIS_PASSWORD;
-		const host = Environment.getType() === 'test' ? Environment.vars.REDIS_HOST_TEST : Environment.vars.REDIS_HOST;
+		const host = Environment.vars.REDIS_HOST;
 		const port = Environment.vars.REDIS_PORT;
 		const url = `redis://${username}:${password}@${host}:${port}`;
 

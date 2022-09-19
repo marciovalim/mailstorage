@@ -1,17 +1,4 @@
 services:
-  app:
-    image: app
-    build: docker/app
-    command: bash -c "yarn && yarn dev"
-    container_name: mailstorage
-    ports:
-      - "3333:3333"
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - redis-database
-
   redis-database:
     image: redis
     restart: always
