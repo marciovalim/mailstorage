@@ -13,6 +13,16 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16.17.0
-      - run: yarn --cwd backend install
+
+      - name: Install dependencies
+        run: |
+          if [ -e backend/yarn.lock ]; then
+          yarn --cwd backend install --frozen-lockfile
+          elif [ -e backend/package-lock.json ]; then
+          npm --prefix backend ci
+          else
+          npm --prefix backend i
+          fi
+
       - run: yarn --cwd backend test --run-in-band --verbose
       - run: yarn --cwd backend build
