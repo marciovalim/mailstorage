@@ -13,6 +13,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16.17.0
-      - run: yarn --cwd backend ci
+      - run: yarn --cwd backend install
       - run: yarn --cwd backend test --run-in-band --verbose
       - run: yarn --cwd backend build
