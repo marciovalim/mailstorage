@@ -14,6 +14,6 @@ jobs:
         with:
           node-version: 16.17.0
       - run: cd backend
-      - run: npm ci
-      - run: npm test --run-in-band --verbose
-      - run: npm build
+      - run: yarn ci
+      - run: yarn test --run-in-band --verbose
+      - run: yarn build
