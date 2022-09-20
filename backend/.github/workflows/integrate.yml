@@ -15,4 +15,8 @@ jobs:
           node-version: 16.17.0
       - run: npm ci
       - run: npm test
+        args:
+          - --run-in-band
+          - --verbose
+
       - run: npm build
