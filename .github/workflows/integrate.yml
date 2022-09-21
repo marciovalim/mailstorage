@@ -24,5 +24,12 @@ jobs:
           npm --prefix backend i
           fi
 
-      - run: yarn --cwd backend test --run-in-band --verbose
+      - name: Run tests
+        env:
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+        run: yarn --cwd backend test --run-in-band --verbose
+
       - run: yarn --cwd backend build
