@@ -24,18 +24,18 @@ jobs:
           npm --prefix backend i
           fi
 
-      - name: Test secrets 1
-        run: |
-          echo "The REDIS_HOST is ${{ secrets.REDIS_HOST }}"
-          echo "The MAIL_FROM is ${{ secrets.MAIL_FROM }}"
-
       - name: Run tests
         env:
           MAIL_FROM: mailstorage@mailstorage.app
+          MAIL_WELCOME_MSG: Seja bem vindo ao Mailstorage!
+          MAIL_WELCOME_BACK_MSG: Que bom que voltou ao MailStorage!
+          MAIL_PROVIDER: aws
+          STORAGE_PROVIDER: aws
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          TEMP_FOLDER: temp
         run: yarn --cwd backend test --run-in-band --verbose
 
       - run: yarn --cwd backend build
