@@ -24,8 +24,10 @@ jobs:
           npm --prefix backend i
           fi
 
-      - name: Test secrets
+      - name: Test secrets 1
         run: echo ${{ secrets.MAIL_FROM }}
+
+      - name: Test secrets 2
         run: echo ${{ secrets.REDIS_HOST }}
 
       - name: Run tests
