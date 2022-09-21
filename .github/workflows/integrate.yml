@@ -8,6 +8,10 @@ on:
 jobs:
   backend_test_pull_request:
     runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: backend/compose.yml
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -23,6 +27,12 @@ jobs:
           else
           npm --prefix backend i
           fi
+
+      - name: Login to DockerHub
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+      - name: Up containers
+        run: docker-compose up -d
 
       - name: Run tests
         env:
