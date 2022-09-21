@@ -26,6 +26,7 @@ jobs:
 
       - name: Run tests
         env:
+          MAIL_FROM: mailstorage@mailstorage.app
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
