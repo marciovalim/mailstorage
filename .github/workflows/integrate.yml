@@ -26,15 +26,30 @@ jobs:
 
       - name: Run tests
         env:
-          MAIL_FROM: mailstorage@mailstorage.app
-          MAIL_WELCOME_MSG: Seja bem vindo ao Mailstorage!
-          MAIL_WELCOME_BACK_MSG: Que bom que voltou ao MailStorage!
-          MAIL_PROVIDER: aws
-          STORAGE_PROVIDER: aws
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          AWS_VERIFIED_MAIL_RECIPIENT: ${{ secrets.AWS_VERIFIED_MAIL_RECIPIENT }}
+          MAIL_WELCOME_MSG: Seja bem vindo ao MailStorage!
+          MAIL_WELCOME_BACK_MSG: Que bom que voltou ao MailStorage!
+          MAIL_PROVIDER: aws
+
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          STORAGE_PROVIDER: aws
+
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXP_IN_HOURS: ${{ secrets.JWT_EXP_IN_HOURS }}
+
+          BYTES_LIMIT_PER_USER: ${{ secrets.BYTES_LIMIT_PER_USER }}
+          BYTES_LIMIT_PER_FILE: ${{ secrets.BYTES_LIMIT_PER_FILE }}
+          FILES_LIMIT_PER_USER: ${{ secrets.FILES_LIMIT_PER_USER }}
           TEMP_FOLDER: temp
         run: yarn --cwd backend test --run-in-band --verbose
 
