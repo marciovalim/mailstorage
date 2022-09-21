@@ -24,6 +24,10 @@ jobs:
           npm --prefix backend i
           fi
 
+      - name: Test secrets
+        run: echo ${{ secrets.MAIL_FROM }}
+        run: echo ${{ secrets.REDIS_HOST }}
+
       - name: Run tests
         env:
           MAIL_FROM: mailstorage@mailstorage.app
