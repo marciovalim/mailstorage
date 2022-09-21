@@ -25,10 +25,9 @@ jobs:
           fi
 
       - name: Test secrets 1
-        run: echo ${{ secrets.MAIL_FROM }}
-
-      - name: Test secrets 2
-        run: echo ${{ secrets.REDIS_HOST }}
+        run: |
+          echo "The REDIS_HOST is ${{ secrets.REDIS_HOST }}"
+          echo "The MAIL_FROM is ${{ secrets.MAIL_FROM }}"
 
       - name: Run tests
         env:
