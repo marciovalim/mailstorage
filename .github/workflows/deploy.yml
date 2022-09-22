@@ -1,0 +1,56 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16.17.0
+
+      - name: Install dependencies
+      - run: |
+          if [ -e backend/yarn.lock ]; then
+          yarn --cwd backend install --frozen-lockfile
+          elif [ -e backend/package-lock.json ]; then
+          npm --prefix backend ci
+          else
+          npm --prefix backend i
+          fi
+
+      - name: Build
+      - run: yarn --cwd backend build
+
+      - name: copy file via ssh password
+      uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "backend/,!backend/node_modules,!backend/dist"
+          target: "~/mailstorage/backend"
+
+      - name: multiple command
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd ~/mailstorage/backend
+          yarn
+          yarn build
+          yarn reload  
+
+
+      
