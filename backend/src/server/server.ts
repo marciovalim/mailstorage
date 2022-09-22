@@ -12,7 +12,7 @@ PM2.onClose(shutDownGracefully);
 async function onListening() {
 	await find<RedisProvider>(redisProviderAlias).open();
 	PM2.emitReady();
-	console.log('🚀 Server is running!');
+	console.log('🚀 Server is running with a change!');
 }
 
 function shutDownGracefully() {
