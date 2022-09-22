@@ -36,8 +36,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: ${{ secrets.SSH_PORT }}
-          source: "backend/.,!backend/node_modules,!backend/dist"
-          target: "~/mailstorage/backend"
+          source: "backend/,!backend/node_modules,!backend/dist"
+          target: "~/mailstorage/backend/"
+          strip_components: 1
 
       - name: multiple command
         uses: appleboy/ssh-action@master
