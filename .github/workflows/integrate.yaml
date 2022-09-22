@@ -7,8 +7,8 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/test.yaml
+    secrets: inherit
 
   backend_test_pull_request:
     needs: test
