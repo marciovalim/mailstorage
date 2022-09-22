@@ -6,7 +6,7 @@ import { app } from './app';
 
 Environment.assertInitialized();
 DependencyInjection.assertInitialized();
-const server = app.listen(3333, onListening);
+const server = app.listen(Environment.vars.PORT, onListening);
 PM2.onClose(shutDownGracefully);
 
 async function onListening() {

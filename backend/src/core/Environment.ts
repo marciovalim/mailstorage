@@ -6,6 +6,7 @@ import { Validator } from './Validator';
 
 export class Environment {
 	private static varsSchema = yup.object({
+		PORT: yup.number().required(),
 		NODE_ENV: yup.string().required().oneOf(['dev', 'test', 'prod']),
 		REDIS_HOST: yup.string().required(),
 		REDIS_PORT: yup.string().required(),
