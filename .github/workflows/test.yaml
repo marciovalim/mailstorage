@@ -28,6 +28,15 @@ jobs:
           npm --prefix backend i
           fi
 
+      - name: Testing credentials
+        run: |
+          echo "DOCKER_USER: $DOCKER_USER"
+          echo "DOCKER_PASS: $DOCKER_PASS"
+          echo "REDIS_USERNAME: $REDIS_USERNAME"
+          echo "REDIS_PASSWORD: $REDIS_PASSWORD"
+          echo "REDIS_HOST: $REDIS_HOST"
+          echo "REDIS_PORT: $REDIS_PORT"
+
       - name: Login to DockerHub
         run: docker login -u $DOCKER_USER -p $DOCKER_PASS
 

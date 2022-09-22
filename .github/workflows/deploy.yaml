@@ -7,7 +7,6 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/test.yaml
 
   deploy_push:
