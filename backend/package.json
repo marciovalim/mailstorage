@@ -6,9 +6,9 @@
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
     "dev": "NODE_ENV=dev ts-node-dev -r dotenv/config --inspect --transpile-only --ignore-watch node_modules --respawn src/server/server.ts",
-    "reload": "pm2 reload pm2.prod.json",
+    "reload": "NODE_ENV=prod pm2 reload pm2.prod.json",
     "seed": "ts-node-dev",
-    "start": "NODE_ENV=prod pm2 start pm2.prod.json",
+    "stop": "pm2 stop pm2.prod.json",
     "test": "jest"
   },
   "dependencies": {

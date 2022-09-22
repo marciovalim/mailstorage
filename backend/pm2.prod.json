@@ -3,13 +3,16 @@
     {
       "name": "mailstorage",
       "script": "./dist/server/server.js",
-      "instances": "max",
+      "instances": "2",
       "exec_mode": "cluster",
       "wait_ready": true,
       "listen_timeout": 5000,
       "restart_delay": 3000,
       "cwd": ".",
-      "kill_timeout": 30000
+      "kill_timeout": 10000,
+      "enviroment": {
+        "NODE_ENV": "prod"
+      }
     }
   ]
 }
