@@ -6,16 +6,13 @@ on:
       - master
 
 jobs:
+  test:
+    - uses: ./.github/workflows/test.yaml
+
   deploy_push:
+    needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16.17.0
-
-      - uses: ./.github/workflows/test.yaml
-
       - name: Build
         run: yarn --cwd backend build
 
