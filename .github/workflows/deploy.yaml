@@ -36,7 +36,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: ${{ secrets.SSH_PORT }}
-          source: "backend/,!backend/node_modules,!backend/dist"
+          source: "backend/.,!backend/node_modules,!backend/dist"
           target: "~/mailstorage/backend"
 
       - name: multiple command
