@@ -9,21 +9,7 @@ jobs:
   deploy_push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-
-      - uses: actions/setup-node@master
-        with:
-          node-version: 16.17.0
-
-      - name: Install dependencies
-        run: |
-          if [ -e backend/yarn.lock ]; then
-          yarn --cwd backend install --frozen-lockfile
-          elif [ -e backend/package-lock.json ]; then
-          npm --prefix backend ci
-          else
-          npm --prefix backend i
-          fi
+      - uses: ./.github/workflows/test.yaml
 
       - name: Build
         run: yarn --cwd backend build

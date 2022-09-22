@@ -8,58 +8,6 @@ on:
 jobs:
   backend_test_pull_request:
     runs-on: ubuntu-latest
-    env:
-      COMPOSE_FILE: backend/compose.yml
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
-      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-      REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
-      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-      REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      REDIS_PORT: ${{ secrets.REDIS_PORT }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16.17.0
-
-      - name: Install dependencies
-        run: |
-          if [ -e backend/yarn.lock ]; then
-          yarn --cwd backend install --frozen-lockfile
-          elif [ -e backend/package-lock.json ]; then
-          npm --prefix backend ci
-          else
-          npm --prefix backend i
-          fi
-
-      - name: Login to DockerHub
-        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-
-      - name: Up containers
-        run: docker-compose up -d
-
-      - name: Run tests
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-
-          MAIL_FROM: ${{ secrets.MAIL_FROM }}
-          AWS_VERIFIED_MAIL_RECIPIENT: ${{ secrets.AWS_VERIFIED_MAIL_RECIPIENT }}
-          MAIL_WELCOME_MSG: Seja bem vindo ao MailStorage!
-          MAIL_WELCOME_BACK_MSG: Que bom que voltou ao MailStorage!
-          MAIL_PROVIDER: aws
-
-          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
-          STORAGE_PROVIDER: aws
-
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXP_IN_HOURS: ${{ secrets.JWT_EXP_IN_HOURS }}
-
-          BYTES_LIMIT_PER_USER: ${{ secrets.BYTES_LIMIT_PER_USER }}
-          BYTES_LIMIT_PER_FILE: ${{ secrets.BYTES_LIMIT_PER_FILE }}
-          FILES_LIMIT_PER_USER: ${{ secrets.FILES_LIMIT_PER_USER }}
-          TEMP_FOLDER: temp
-        run: yarn --cwd backend test --run-in-band --verbose
-
+      - uses: ./.github/workflows/test.yaml
       - run: yarn --cwd backend build
