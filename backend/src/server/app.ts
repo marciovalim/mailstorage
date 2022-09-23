@@ -10,22 +10,26 @@ import { appRouter } from './routes/router';
 
 const app = express();
 
-Sentry.init({
-	dsn: Environment.getType() === 'prod' ? Environment.vars.SENTRY_DSN : '',
-	integrations: [
-		new Sentry.Integrations.Http({ tracing: true }),
-		new Tracing.Integrations.Express({ app }),
-	],
-	tracesSampleRate: 1.0,
-});
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+if (Environment.getType() === 'prod') {
+	Sentry.init({
+		dsn: Environment.vars.SENTRY_DSN,
+		integrations: [
+			new Sentry.Integrations.Http({ tracing: true }),
+			new Tracing.Integrations.Express({ app }),
+		],
+		tracesSampleRate: 1.0,
+	});
+	app.use(Sentry.Handlers.requestHandler());
+	app.use(Sentry.Handlers.tracingHandler());
+}
 
 app.use(express.json());
 app.use(rateLimiter);
 app.use(appRouter);
 
-app.use(Sentry.Handlers.errorHandler());
+if (Environment.getType() === 'prod') {
+	app.use(Sentry.Handlers.errorHandler());
+}
 app.use(handleErrors);
 
 export { app };
