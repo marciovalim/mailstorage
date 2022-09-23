@@ -10,6 +10,7 @@ export class Environment {
 		NODE_ENV: yup.string().required().oneOf(['dev', 'test', 'prod']),
 		RATE_LIMITER_POINTS: yup.number().required(),
 		RATE_LIMITER_DURATION: yup.number().required(),
+		SENTRY_DSN: yup.string().required(),
 		REDIS_HOST: yup.string().required(),
 		REDIS_PORT: yup.string().required(),
 		REDIS_USERNAME: yup.string().required(),

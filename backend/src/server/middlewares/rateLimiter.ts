@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { RateLimiterAbstract, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import { Environment } from '../../core/Environment';
 import { AppError } from '../../errors/AppError';
 
+Environment.assertInitialized();
 const limiter = new RateLimiterMemory({
 	points: Environment.vars.RATE_LIMITER_POINTS,
 	duration: Environment.vars.RATE_LIMITER_DURATION,
