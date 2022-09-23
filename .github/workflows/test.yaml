@@ -41,6 +41,8 @@ jobs:
           RATE_LIMITER_POINTS: 100
           RATE_LIMITER_DURATION: 1
 
+          SENTRY_DSN: test
+
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}

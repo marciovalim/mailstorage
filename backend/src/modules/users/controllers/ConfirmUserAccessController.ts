@@ -18,6 +18,8 @@ export class ConfirmUserAccessController implements Controller {
 	});
 
 	async handle(req: Request, res: Response): Promise<Response> {
+		throw new Error('Testing sentry.');
+
 		const body = await this.bodyShema.validate(req.body, { abortEarly: false });
 
 		const confirmRes = await this.confirmUserAccessUseCase.execute(body);

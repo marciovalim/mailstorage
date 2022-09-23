@@ -11,7 +11,7 @@ import { appRouter } from './routes/router';
 const app = express();
 
 Sentry.init({
-	dsn: Environment.vars.SENTRY_DSN,
+	dsn: Environment.getType() === 'prod' ? Environment.vars.SENTRY_DSN : '',
 	integrations: [
 		new Sentry.Integrations.Http({ tracing: true }),
 		new Tracing.Integrations.Express({ app }),
