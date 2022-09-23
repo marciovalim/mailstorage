@@ -3,6 +3,7 @@ import { Environment } from '../core/Environment';
 import { PM2 } from '../core/PM2';
 import { RedisProvider, redisProviderAlias } from '../providers/redis/RedisProvider';
 import { app } from './app';
+import * as Sentry from '@sentry/node';
 
 Environment.assertInitialized();
 DependencyInjection.assertInitialized();
@@ -18,6 +19,7 @@ async function onListening() {
 function shutDownGracefully() {
 	server.close(async () => {
 		await find<RedisProvider>(redisProviderAlias).close();
+		await Sentry.close();
 		process.exit(0);
 	});
 }
