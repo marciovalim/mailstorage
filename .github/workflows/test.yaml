@@ -63,4 +63,4 @@ jobs:
           BYTES_LIMIT_PER_FILE: ${{ secrets.BYTES_LIMIT_PER_FILE }}
           FILES_LIMIT_PER_USER: ${{ secrets.FILES_LIMIT_PER_USER }}
           TEMP_FOLDER: temp
-        run: yarn --cwd backend test --run-in-band --verbose
+        run: yarn --cwd backend test --run-in-band --verbose --detectOpenHandles
