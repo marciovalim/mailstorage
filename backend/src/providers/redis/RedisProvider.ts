@@ -1,3 +1,5 @@
+import { RedisClientType } from 'redis';
+
 export type RedisProvider = {
 	open(): Promise<void>;
 	close(): Promise<void>;
@@ -7,6 +9,7 @@ export type RedisProvider = {
 	pushToList(key: string, value: string): Promise<void>;
 	removeAllFromList(key: string, value: string): Promise<void>;
 	clearKeysContaining(pattern: string): Promise<void>;
+	getLowLevelClient(): RedisClientType;
 }
 
 export type TimedValue = {

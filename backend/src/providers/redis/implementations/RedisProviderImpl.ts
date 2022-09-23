@@ -1,7 +1,6 @@
 import { createClient, RedisClientType } from 'redis';
 
 import { Environment } from '../../../core/Environment';
-import { Utils } from '../../../utils/Utils';
 import { RedisProvider, TimedValue } from '../RedisProvider';
 
 export class RedisProviderImpl implements RedisProvider {
@@ -58,5 +57,9 @@ export class RedisProviderImpl implements RedisProvider {
 		if (keys.length === 0) return;
 
 		await this.client!.del(keys);
+	}
+
+	getLowLevelClient(): RedisClientType {
+		return this.client!;
 	}
 }
